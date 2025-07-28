@@ -1,3 +1,6 @@
+import json
+import os
+
 class Book:
     def __init__(self, title, author):
         self.title = title
@@ -11,6 +14,24 @@ class Book:
 class Library:
     def __init__(self):
         self.books = []
+
+    def save_to_file(self, filename="books.json"):
+        data = [ 
+            {"title": book.title, "author": book.author, "is_issued": book.is_issued}
+            for book in self.books
+        ]
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+
+    def load_from_file(self, filename="books.json"):
+        if os.path.exists(filename):
+            with open(filename, "r") as f:
+                data = json.load(f)
+                for item in data:
+                    book = Book(item["title"], item["author"])
+                    book.is_issued = item["is_issued"]
+                    self.books.append(book)
+
     
     def add_book(self, book):
         self.books.append(book)
@@ -61,6 +82,7 @@ class Library:
     
 def main():
     library = Library()
+    library.load_from_file()
 
     while True:
         print("\n--- LIBRARY ZONE ---")
@@ -81,25 +103,30 @@ def main():
             author = input("who wrote it?: ")
             new_book = Book(title, author)
             library.add_book(new_book)
+            library.save_to_file()
             print(f"bet. {title} by {author} is in.")
 
         elif choice == '3':
             title = input("book title?: ")
             library.remove_book(title)
+            library.save_to_file()  
 
         elif choice == '4':
             title = input("which one u tryna read?: ")
             library.issue_book(title)
+            library.save_to_file() 
 
         elif choice == '5':
             title = input("which one u bringing back?: ")
             library.return_book(title)
+            library.save_to_file()  
 
         elif choice == '6':
             print("aight, cya later! Come back if you feel like reading again")
             break
         else:
             print("fam, that's not an option. pick 1-6.")
+
 
 if __name__ == "__main__":
     main()
