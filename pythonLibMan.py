@@ -118,11 +118,11 @@ def main():
 
         elif choice == '5':
             title = input("which one u bringing back?: ")
-            library.return_book(title)
-            library.save_to_file()  
+            library.return_book(title)  
 
         elif choice == '6':
             print("aight, cya later! Come back if you feel like reading again")
+            library.save_to_file()
             break
         else:
             print("fam, that's not an option. pick 1-6.")
